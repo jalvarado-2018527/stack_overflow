@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="roles_seq" author="Daniel Rojo">
+        <createSequence sequenceName="roles_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="profiles_seq" author="Daniel Rojo">
+        <createSequence sequenceName="profiles_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="profiles_roles_seq" author="Daniel Rojo">
+        <createSequence sequenceName="profiles_roles_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+    <changeSet id="users_seq" author="Daniel Rojo">
+        <createSequence sequenceName="users_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+    <changeSet id="audit_seq" author="Daniel Rojo">
+        <createSequence sequenceName="audit_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="technologies_seq" author="Daniel Rojo">
+        <createSequence sequenceName="technologies_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="tags_seq" author="Jairo">
+        <createSequence sequenceName="tags_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="question_seq" author="Jairo">
+        <createSequence sequenceName="question_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+    <changeSet id="vote_seq" author="Jairo">
+        <createSequence sequenceName="vote_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="answers_seq" author="Daniel Rojo">
+        <createSequence sequenceName="answers_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+    
+    <changeSet id="answer_votes_seq" author="Daniel Rojo">
+        <createSequence sequenceName="answer_votes_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="comments_seq" author="Daniel Rojo">
+        <createSequence sequenceName="comments_seq"
+                        startValue="1"
+                        incrementBy="1" />
+    </changeSet>
+
+    <changeSet id="roles" author="Daniel Rojo">
+        <createTable tableName="roles">
+            <column name="role_id" type="INTEGER" defaultValueComputed="nextval('roles_seq')">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="code" type="VARCHAR(50)" />
+            <column name="description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="profiles" author="Daniel Rojo">
+        <createTable tableName="profiles">
+            <column name="profile_id" type="INTEGER" defaultValueComputed="nextval('profiles_seq')" >
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" type="VARCHAR(50)" />
+            <column name="description" type="VARCHAR(255)" />
+        </createTable>
+    </changeSet>
+
+    <changeSet id="audit" author="Daniel Rojo">
+        <createTable tableName="audit">
+            <column name="id" type="INTEGER" defaultValueComputed="nextval('profiles_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="change_date" type="TIMESTAMP" />
+            <column name="user" type="VARCHAR"/>
+            <column name="request_body" type="VARCHAR"/>
+            <column name="entity" type="VARCHAR"/>
+            <column name="status_code" type="INTEGER"/>
+            <column name="action" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="votes" author="Jairo">
+        <createTable tableName="votes">
+            <column name="vote_id" type="INTEGER" defaultValueComputed="nextval('vote_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(50)"/>
+            <column name="vote" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="profiles_roles" author="Daniel Rojo">
+        <createTable tableName="profiles_roles">
+            <column name="profile_id" type="INTEGER" />
+            <column name="role_id" type="INTEGER" />
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="profiles_roles"
+                                 baseColumnNames="profile_id"
+                                 constraintName="profiles_fk"
+                                 referencedTableName="profiles"
+                                 referencedColumnNames="profile_id" />
+        <addNotNullConstraint columnDataType="INTEGER" tableName="profiles" columnName="profile_id" />
+        <addForeignKeyConstraint baseTableName="profiles_roles"
+                                 baseColumnNames="role_id"
+                                 constraintName="role_fk"
+                                 referencedTableName="roles"
+                                 referencedColumnNames="role_id" />
+        <addNotNullConstraint columnDataType="INTEGER" tableName="roles" columnName="role_id" />
+    </changeSet>
+
+    <changeSet id="users" author="Daniel Rojo">
+        <createTable tableName="users">
+            <column name="user_id" type="INTEGER" defaultValueComputed="nextval('users_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+
+            <column name="name" type="VARCHAR"/>
+            <column name="surname" type="VARCHAR"/>
+            <column name="email" type="VARCHAR"/>
+            <column name="password" type="VARCHAR"/>
+            <column name="status" type="BOOLEAN" />
+            <column name="profile_id" type="INTEGER" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="users"
+                                 baseColumnNames="profile_id"
+                                 constraintName="profiles_fk"
+                                 referencedTableName="profiles"
+                                 referencedColumnNames="profile_id" />
+        <addNotNullConstraint columnDataType="INTEGER" tableName="profiles" columnName="profile_id" />
+    </changeSet>
+
+    <changeSet id="tags" author="Jairo">
+        <createTable tableName="tags">
+            <column name="id" type="INTEGER" defaultValueComputed="nextval('tags_seq')">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="code" type="VARCHAR"/>
+            <column name="name" type="VARCHAR"/>
+            <column name="status" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="profile_status" author="Daniel Rojo">
+        <addColumn tableName="profiles">
+            <column name="status" type="INTEGER" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="rename_user" author="jairo">
+        <renameColumn tableName="audit" oldColumnName="user" newColumnName="user_audit"/>
+    </changeSet>
+
+    <changeSet id="technology" author="Daniel Rojo">
+        <createTable tableName="technology">
+            <column name="technology_id" type="INTEGER" defaultValueComputed="nextval('technologies_seq')">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="abbreviation" type="VARCHAR(50)" />
+            <column name="name" type="VARCHAR(50)" />
+            <column name="status" type="BOOLEAN"/>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="questions" author="Jairo">
+        <createTable tableName="questions">
+            <column name="question_id" type="INTEGER" defaultValueComputed="nextval('question_seq')">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="question" type="VARCHAR(200)" />
+            <column name="tag_id" type="INTEGER"/>
+                <column name="technology_id" type="INTEGER"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="questions"
+                                 baseColumnNames="technology_id"
+                                 constraintName="technology_fk"
+                                 referencedTableName="technology"
+                                 referencedColumnNames="technology_id" />
+        <addNotNullConstraint columnDataType="INTEGER" tableName="technology" columnName="technology_id"/>
+    </changeSet>
+
+
+    <changeSet id="questions_tags" author="Jairo">
+        <createTable tableName="questions_tags" >
+            <column name="tag_id" type="INTEGER" />
+            <column name="question_id" type="INTEGER"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="questions_tags"
+                                 baseColumnNames="tag_id"
+                                 constraintName="tag_fk"
+                                 referencedTableName="tags"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <addNotNullConstraint columnDataType="INTEGER" tableName="tags" columnName="id"/>
+        <addForeignKeyConstraint baseTableName="questions_tags"
+                                 baseColumnNames="question_id"
+                                 constraintName="question_fk"
+                                 referencedTableName="questions"
+                                 referencedColumnNames="question_id"
+                                 onDelete="CASCADE"   />
+        <addNotNullConstraint columnDataType="INTEGER" tableName="questions" columnName="question_id"/>
+    </changeSet>
+
+
+
+    <changeSet id="remove_question" author="Jairo">
+        <dropColumn tableName="questions" columnName="tag_id"/>
+    </changeSet>
+
+    <changeSet id="remove_tec_id" author="Jairo">
+        <dropForeignKeyConstraint baseTableName="questions" constraintName="technology_fk"/>
+    </changeSet>
+
+    <changeSet id="rename_tec" author="Jairo">
+        <dropColumn tableName="questions" columnName="technology_id"/>
+    </changeSet>
+
+    <changeSet id="add_question" author="Jairo">
+        <addColumn tableName="questions">
+            <column name="title" type="VARCHAR(50)"/>
+            <column name="user_question" type="VARCHAR(50)"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="technology" type="VARCHAR(50)"/>
+
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add_votes" author="Jairo">
+        <addColumn tableName="votes">
+            <column name="question_id" type="INTEGER"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="votes"
+                                 baseColumnNames="question_id"
+                                 constraintName="question_fk"
+                                 referencedTableName="questions"
+                                 referencedColumnNames="question_id"/>
+        <addNotNullConstraint columnDataType="INTEGER" tableName="questions" columnName="question_id"/>
+    </changeSet>
+
+    <changeSet id="rename_q" author="Jairo">
+        <renameColumn tableName="questions" oldColumnName="user_question" newColumnName="question_user"/>
+    </changeSet>
+
+    <changeSet id="answers" author="Daniel Rojo">
+        <createTable tableName="answers">
+            <column name="answer_id" type="INTEGER" defaultValueComputed="nextval('answers_seq')">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="answer" type="VARCHAR" />
+            <column name="user" type="varchar" />
+            <column name="created_at" type="TIMESTAMP" />
+            <column name="question_id" type="INTEGER" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="answers"
+                                 baseColumnNames="question_id"
+                                 constraintName="question_fk"
+                                 referencedTableName="questions"
+                                 referencedColumnNames="question_id"
+                                 onDelete="CASCADE"/>
+        <addNotNullConstraint tableName="questions" columnName="question_id" columnDataType="INTEGER" />
+    </changeSet>
+
+    <changeSet id="rename_user_answers" author="Daniel Rojo">
+        <renameColumn tableName="answers" oldColumnName="user" newColumnName="answer_user" />
+    </changeSet>
+    
+    <changeSet id="answer_votes" author="Daniel Rojo">
+        <createTable tableName="answer_votes">
+            <column name="answer_vote_id" type="INTEGER" defaultValueComputed="nextval('answer_votes_seq')">
+                <constraints primaryKey="true" />
+            </column>
+            <column name="name" type="VARCHAR" />
+            <column name="vote" type="INTEGER" />
+            <column name="answer_id" type="INTEGER" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="answer_votes"
+                                 baseColumnNames="answer_id"
+                                 constraintName="answers_fk"
+                                 referencedTableName="answers"
+                                 referencedColumnNames="answer_id" />
+        <addNotNullConstraint tableName="answers" columnName="answer_id" columnDataType="INTEGER" />
+    </changeSet>
+
+    <changeSet id="comments" author="Daniel Rojo">
+        <createTable tableName="comments">
+            <column name="comment_id" type="INTEGER" defaultValueComputed="nextval('comments_seq')">
+                <constraints primaryKey="true" />
+            </column>
+
+            <column name="comment" type="VARCHAR" />
+            <column name="user_comment" type="VARCHAR" />
+            <column name="created_at" type="TIMESTAMP" />
+            <column name="answer_id" type="INTEGER" />
+        </createTable>
+        <addForeignKeyConstraint baseTableName="comments"
+                                 baseColumnNames="answer_id"
+                                 constraintName="answers_fk"
+                                 referencedTableName="answers"
+                                 referencedColumnNames="answer_id" />
+        <addNotNullConstraint tableName="answers" columnName="answer_id" columnDataType="INTEGER" />
+    </changeSet>
+
+
+</databaseChangeLog>
+
+
+
+
+
+
+
+
+
+
+
+

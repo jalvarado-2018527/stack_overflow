@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+	<conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+	<conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+	<property name="LOG_PATTERN" value="${LOG_PATTERN:-%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%15.15t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+	<property name="CATALINA_PATTERN" value="%d %-5p: [%c] %m %rEx{20} %n"/>
+
+	<!-- STDOUT-->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>${LOG_PATTERN}</pattern>
+		</encoder>
+	</appender>
+
+	<!-- OUT -->
+	<appender name="SAVE-TO-FILE-OUT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/app/appEvent_i4tBase.out</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/var/log/app/appEvent_i4tBase.out.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>500MB</totalSizeCap>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>DENY</onMatch>
+		</filter>
+	</appender>
+
+	<!-- ERR-->
+	<appender name="SAVE-TO-FILE-ERR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>/var/log/app/appEvent_i4tBase.err</file>
+		<append>true</append>
+		<encoder>
+			<pattern>%msg%n</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>/var/log/app/appEvent_i4tBase.err.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>500MB</totalSizeCap>
+		</rollingPolicy>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>DEBUG</level>
+			<onMatch>DENY</onMatch>
+		</filter>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+		</filter>
+	</appender>
+
+	<springProfile name="default">
+		<root level="INFO" additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</root>
+	</springProfile>
+
+	<springProfile name="i4t">
+		<root level="INFO" additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</root>
+		<logger name="APP">
+			<appender-ref ref="SAVE-TO-FILE-OUT"/>
+			<appender-ref ref="SAVE-TO-FILE-ERR"/>
+		</logger>
+	</springProfile>
+
+	<springProfile name="dev">
+		<root level="INFO" additivity="false">
+			<appender-ref ref="CONSOLE" />
+		</root>
+		<logger name="APP">
+			<appender-ref ref="SAVE-TO-FILE-OUT"/>
+			<appender-ref ref="SAVE-TO-FILE-ERR"/>
+		</logger>
+	</springProfile>
+
+	<springProfile name="qa">
+		<logger name="APP">
+			<appender-ref ref="SAVE-TO-FILE-OUT"/>
+			<appender-ref ref="SAVE-TO-FILE-ERR"/>
+		</logger>
+	</springProfile>
+
+	<springProfile name="prod">
+		<logger name="APP">
+			<appender-ref ref="SAVE-TO-FILE-OUT"/>
+			<appender-ref ref="SAVE-TO-FILE-ERR"/>
+		</logger>
+	</springProfile>
+
+</configuration>
